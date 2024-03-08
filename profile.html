@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile page</title>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="node_modules/axios/dist/axios.min.js"></script>
+    <style>
+         .card{
+            margin-top: 40px;
+         }
+         .number-info {
+            color: rgb(172,172,172);
+            font-weight: 100px;
+         }
+         .number-info-span{
+            font-size: 50px;
+            color: black;
+         }
+         .user-main-info{
+            font-weight: 500px;
+            font-size: 20px;
+         }
+
+    </style>
+</head>
+<body style="background-color: #cac0d4;">
+
+  <!-- =======  Spiners  ======= -->
+  <div id="loader" class="d-flex justify-content-center align-items-center" style="position: fixed; left: 0; right: 0 ;margin: auto; z-index: 999; top: 0 ;bottom: 0; width: 100px; height: 100px; background-color: rgba(172, 172, 172, 0.429); border-radius: 20px;">
+    <div class="spinner-border " role="status" style="width:3rem; height:3rem; color:#fff" >
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+<!-- ======= //  Spiners  // ======= -->
+
+
+
+
+
+
+    <!-- //============= model login ============\\ -->
+
+<div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">login</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Username:</label>
+              <input type="email" class="form-control" id="username">
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Password:</label>
+              <input type="password" class="form-control" id="password">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+        </div>
+      </div>
+    </div>
+</div>
+   <!-- //============= model login ============\\ -->
+
+
+
+
+  <!-- //============= model delete ============\\ -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="modal-confirm-delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Post</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" onclick="confirmDeletePostBtn()">Delete</button>
+          <!-- // important !!    -->
+          <input type="hidden" id="delete-id-post" value="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+ <!-- //============= model delete ============\\ -->
+
+   
+
+   <!-- //============= model rigister ============\\ -->
+<div class="modal fade" id="signup-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Rigister A NEW User</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Profile Image:</label>
+                <input type="file" class="form-control" id="re-image">
+            </div>
+
+            <div class="mb-3">
+                <label for="message-text" class="col-form-label">Name:</label>
+                <input type="email" class="form-control" id="re-name">
+            </div>
+
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Username:</label>
+              <input type="text" class="form-control" id="re-username">
+            </div>
+            
+            <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"> New Password :</label>
+                <input type="password" class="form-control" id="re-password">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="signup()">Rigister</button>
+        </div>
+      </div>
+    </div>
+</div> 
+ <!-- //============= model rigister ============\\ -->
+
+
+
+    <!-- //============= Create a New Post ============\\ -->
+
+    <div class="modal fade" id="create-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="post-modal-title">Create A NEW Post</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">Title:</label>
+                  <input type="text" class="form-control" id="title-post">
+                    <!-- // is edited or created -->
+                  <input type="hidden" id="post-id-input" value="">
+                </div>
+
+                <div class="mb-3">
+                    <textarea name="body-post" id="body-post" style="width: 100%; height: 100px; border-color: rgb(183, 182, 182); border-radius: 8px; resize: none; padding:none">
+                    </textarea>
+                </div>
+
+                <div class="mb-3">
+                    <input type="file" class="form-control" id="image-post">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="createPostBtn()" id="btnCreate">Create</button>
+            </div>
+          </div>
+        </div>
+    </div>
+       <!-- //============= Create a New Post ============\\ -->
+
+
+
+
+
+ <!-- //============= add btn post ============\\ -->
+ <div class="btn btn-primary rounded-circle" style="position: fixed; top: 670px; right: 60px; width: 70px; height: 70px; box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.589); z-index: 1000;" onclick="addBtnClicked()" id="addBtn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-plus" viewBox="2.2 1 15 15">
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+    </svg>
+</div>
+ <!-- //============= add btn post ============\\ -->
+
+
+
+  <!-- //============= Aleart ============\\ -->
+   <div id="liveAlertPlaceholder" class="show fade" style="position: fixed; z-index: 1000; width: 30%; bottom: 0; right: 0;"></div>
+  <!-- //============= Aleart ============\\ -->
+
+
+
+
+    <!-- navbar container -->
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <div class="col-9">
+                <nav class="navbar navbar-expand-lg bg-body-tertiary rounded-bottom pt-3 shadow">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="home.html">Barkhed</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="home.html">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" onclick="profileClicked()"style="cursor: pointer;">Profile</a>
+                                </li>
+                            </ul>
+                        <!-- < ========= NON logg========== > -->
+                            <div class="w-100 d-flex justify-content-end" id="logget-in-div">
+                                <button type="button" class="btn btn-outline-success mx-2" id="login" data-bs-toggle="modal" data-bs-target="#login-modal" data-bs-whatever="@mdo">login</button>
+                                <button type="button" class="btn btn-outline-success" id="signup" data-bs-toggle="modal" data-bs-target="#signup-modal" data-bs-whatever="@mdo">sign up</button>
+                            </div>
+                        <!-- < ========= NON logg========== > -->
+
+                        
+
+                         <!-- < ========= logged ========== > -->
+                         <div class="w-100 d-flex justify-content-end" id="logout-div">
+                            <div class="card-header">
+                                <img src='' class="border rounded-circle border-2" style="width: 40px; height: 40px;" id="nav-image">
+                                <b class="mx-2" style="vertical-align: middle;" id="nav-username"></b>
+                                <!-- @a.ji17 -->
+                                <!-- "images/null-image.jpeg" -->
+                            </div>
+                            <button type="button" class="btn btn-outline-danger mx-2" id="logout" data-bs-toggle="modal"  data-bs-whatever="@mdo" onclick="logout()">logout</button>
+                            
+                        </div>
+                        <!-- < ========= logged ========== > -->
+
+                        
+
+                        </div>
+                      
+                    </div>
+                </nav>
+            </div>
+        </div>
+        
+    </div>
+    <!--//  navbar container // -->
+
+
+
+    <div class="container">
+        <div class="d-flex justify-content-center mt-5">
+            <div class="col-9">
+                <!--  Main info  -->
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <!--  user image  -->
+                            <div class="col-2">
+                                <img id="header-image" class="rounded-circle border border-4" src="" style="width: 120px; height: 120px;">
+                            </div>
+                             <!-- // user image // -->
+
+                            <!--  user data  -->
+                            <div class="col-4 d-flex flex-column justify-content-evenly">
+                                <div class="user-main-info" id="email"></div>
+                                <div class="user-main-info" id="name"></div>
+                                <div class="user-main-info" id="username-header"></div>
+                            </div>
+                             <!-- // user data // -->
+
+                              <!--  post data  -->
+                            <div class="col-4 d-flex flex-column justify-content-evenly">
+                                <div class="number-info">
+                                    <span class="number-info-span" id="posts-count"></span>Posts
+                                </div>
+                                <div class="number-info">
+                                    <span class="number-info-span" id="commetns-count"></span>Comments
+                                </div>
+                            </div>
+                             <!-- // post data // -->
+                        </div>
+
+                    </div>
+                </div>
+                <!-- // Main info // -->
+
+                <h1 class="mt-4">
+                    <span id="profile-user-name"></span>
+                    Posts
+                </h1>
+                <!--  posts  -->
+                <div class="row" id="user-posts">
+                    
+                </div>
+                
+                <!-- // users post // -->
+                
+                 <!-- // posts  // -->
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="mainLogic.js"></script>
+<script src="homeScripts.js"></script>
+<script>
+    getUser()
+    getposts()
+
+    function getCurrentUserid(){
+        const urlParams = new URLSearchParams(window.location.search)
+        const id = urlParams.get("userid")
+        return id
+    }
+    
+
+    function getUser(){
+        toggleLoader(true);
+        const id = getCurrentUserid()
+        axios.get(`${url}users/${id}`)
+        .then(function (response) {
+
+            console.log(response.data)
+            const user = response.data.data
+            document.getElementById('header-image').src = user.profile_image
+            document.getElementById('email').innerHTML = user.email
+            document.getElementById('name').innerHTML = user.name
+            document.getElementById('username-header').innerHTML = user.username
+            document.getElementById('posts-count').innerHTML = user.posts_count
+            document.getElementById('commetns-count').innerHTML = user.comments_count
+            document.getElementById('profile-user-name').innerHTML = `${user.username} 's`
+
+  
+
+        }).finally(()=>{
+        toggleLoader(false)
+    })
+    }
+
+    function getposts(){
+        toggleLoader(true)
+        const id = getCurrentUserid()
+        axios.get(`${url}users/${id}/posts`)
+        .then(function (response) {
+
+            console.log(response.data.data)
+            posts = response.data.data
+            document.getElementById('user-posts').innerHTML = ""
+            for(let post of posts){  
+
+            
+            
+                // show or hide (edit) button
+                let user = getCurentUser()
+                let isMyPost = user != null && post.author.id == user.id
+                
+                let BtnContent = ``
+
+                if(isMyPost){                                                                                                       // important !!    // important !!
+                    BtnContent = `<button class='btn btn-outline-secondary' style='float:right;' onclick="editPostBtnClicked('${encodeURIComponent(JSON.stringify(post))}')">Edit</button>
+                    <button class="btn btn-outline-danger mx-2" style="float:right;" onclick="deletePostBtnClicked('${encodeURIComponent(JSON.stringify(post))}')">Delete</button>`
+                }
+                const author = post.author
+                // important !!
+                let postTitle = ""
+
+                if(post.title != null){
+                    postTitle = post.title
+                }
+                let content = 
+                `<div class="card shadow">
+                    <div class="card-header">
+                        <img src="${author.profile_image}" class="border rounded-circle border-2" style="width: 40px; height: 40px;" id="avatar-post">
+                        <b class="mx-2" style="vertical-align: middle;">${author.username}</b>
+
+                        ${BtnContent}
+                    </div>
+                    <div class="card-body" onclick="postClicked(${post.id})" style="cursor:pointer;">
+                        <img src="${post.image}" class="w-100" id="img">
+                        <div class="text-secondary mt-2">${post.created_at}</div>
+                        <h5 class="card-title" id="title">${postTitle}</h5>
+                        <p class="card-text" id="body">${post.body}</p>
+                        <hr>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                            <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                        </svg>
+                        <span>(${post.comments_count}) comments
+                            <span id="post-tags-${post.id}">
+
+                            </span>
+                        </span>
+                    </div>
+                </div>`
+
+                document.getElementById('user-posts').innerHTML += content
+                let currentPosttagsId = `post-tags-${post.id}`
+                document.getElementById(currentPosttagsId).innerHTML = ""
+                for(const tag of post.tags){
+                    let tagsContent = 
+                    `<button class="btn btn-sm rounded-5" style="background-color:grey; color:white;">
+                        ${tag.name}
+                    </button>`
+
+                    document.getElementById(currentPosttagsId).innerHTML += tagsContent
+                }
+            }
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        }).finally(()=>{
+        toggleLoader(false)
+    })
+
+   
+    }
+
+
+
+
+    
+
+</script>
+</html>
